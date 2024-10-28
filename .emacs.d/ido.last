@@ -2,24 +2,34 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/home/levent/" . "test/")
  ("/home/" . "levent/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
  "/home/levent/"
+ "/home/levent/.dotfiles/"
+ "/home/levent/.dotfiles/.emacs.local/"
 )
 
 ;; ----- ido-work-file-list -----
 (
  "test.c"
  ".emacs"
+ "kernc-mode.el"
  ".emacs.custom.el"
 )
 
 ;; ----- ido-dir-file-cache -----
 (
- ("/home/levent/" (26397 4563 94716 236000) ".zsh_history" "Software/" ".zshrc.pre-oh-my-zsh" ".emacs.custom.el" ".Xresources" "Downloads/" "../" ".xinitrc" ".vscode/" "test" ".fehbg" ".erc/" ".cache/" ".bash_profile" ".emacs.d/" ".bash_logout" "Thesis/" ".config/" "test2.c" ".zcompdump-dev-5.9" ".swt/" ".oh-my-zsh/" ".emacs" ".bashrc" "./" ".stm32cubemx/" ".emacs.rc/" ".p10k.zsh" ".zcompdump-dev-5.9.zwc" ".stmcufinder/" ".eclipse/" ".gitconfig" "Documents/" ".var/" ".pki/" "#test.c#" ".bash_history" ".mozilla/" "Projects/" ".cargo/" ".dosbox/" ".java/" ".suckless/" ".vim/" "Books/" "test.c" ".emacs.local/" ".zshrc" "Blog/" ".viminfo" ".Xauthority" ".tmux.conf" ".stm32cubeide/" "Image/" ".bash_safe_source" "test2.c~" ".ssh/" ".conan2/" ".emacs.custom.el~" ".shell.pre-oh-my-zsh" ".python_history" ".stmcube/" ".emacs~" "Study/" ".platformio/" ".wget-hsts" ".emacs_old_backup/" ".vscode-oss/" "test.c~" ".local/" ".gnupg/")
+ ("/home/levent/" (26399 15720 339869 943000) ".zsh_history" "Software/" ".zshrc.pre-oh-my-zsh" ".emacs.custom.el" ".Xresources" ".dotfiles/" "Downloads/" "../" ".xinitrc" ".vscode/" "test/" ".fehbg" ".erc/" ".cache/" ".bash_profile" ".emacs.d/" ".bash_logout" "Thesis/" ".config/" ".zcompdump-dev-5.9" ".swt/" ".oh-my-zsh/" ".emacs" ".bashrc" "./" ".stm32cubemx/" ".emacs.rc/" ".p10k.zsh" ".zcompdump-dev-5.9.zwc" ".stmcufinder/" ".eclipse/" ".gitconfig" "Documents/" ".var/" ".pki/" ".bash_history" ".mozilla/" "Projects/" ".zshrc.bak" ".cargo/" ".dosbox/" ".java/" ".suckless/" ".vim/" "Books/" "test.c" ".emacs.local/" ".zshrc" "Blog/" ".viminfo" ".Xauthority" ".tmux.conf" ".stm32cubeide/" "Image/" ".bash_safe_source" ".ssh/" ".conan2/" ".emacs.custom.el~" ".shell.pre-oh-my-zsh" ".python_history" ".stmcube/" ".emacs~" "Study/" ".platformio/" "bootsector-dev/" ".wget-hsts" ".emacs_old_backup/" ".vscode-oss/" ".local/" ".gnupg/")
+
+ ("/home/levent/test/" (26397 5722 54733 855000) "c.c" "#c.c#" "../" "./" "#cpp.cpp#" "hello.c" "c.c~" "cpp.cpp" "hello")
+
+ ("/home/levent/.dotfiles/.emacs.local/" (26399 14754 636476 162000) "../" "kernc-mode.el" "./" "simpc-mode.el")
+
+ ("/home/levent/.dotfiles/" (26399 14708 363727 957000) ".emacs.custom.el" "../" ".xinitrc" ".fehbg" ".emacs.d/" ".oh-my-zsh/" ".emacs" "./" "README.md" ".emacs.rc/" ".suckless/" ".emacs.local/" ".zshrc" ".tmux.conf" ".git/")
 
  ("/home/" (26165 11535 982211 89000) "../" "./" "levent/" "lost+found/")
 

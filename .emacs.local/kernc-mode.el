@@ -72,20 +72,31 @@
          (indent-len 8)  ;; Use tabs and 8-space wide indentation
          (prev-indent (kernc--indentation-of-previous-non-empty-line)))
     (cond
+     ;; Preprocessor lines should not be indented
+     ((string-match-p "^\\s-*#" cur-line)
+      0)
+     ;; Special handling for function definitions like `main`
+     ((string-match-p "^\\s-*\\(int\\|void\\|char\\|long\\|short\\).*(" cur-line)
+      0)
      ;; Special handling for switch/case
      ((string-match-p "^\\s-*switch\\s-*(.+)" prev-line)
       prev-indent)
+     ;; Handle closing brace on its own line
      ((and (string-suffix-p "{" prev-line)
            (string-prefix-p "}" (string-trim-left cur-line)))
       prev-indent)
+     ;; Increase indentation after opening brace
      ((string-suffix-p "{" prev-line)
       (+ prev-indent indent-len))
+     ;; Decrease indentation for closing braces
      ((string-prefix-p "}" (string-trim-left cur-line))
       (max (- prev-indent indent-len) 0))
+     ;; Increase indentation for case labels
      ((string-suffix-p ":" prev-line)
       (if (string-suffix-p ":" cur-line)
           prev-indent
         (+ prev-indent indent-len)))
+     ;; Decrease indentation after case labels
      ((string-suffix-p ":" cur-line)
       (max (- prev-indent indent-len) 0))
      (t prev-indent))))

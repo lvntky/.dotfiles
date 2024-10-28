@@ -34,8 +34,8 @@
 ;; custom el loading starts
 
 (add-to-list 'load-path "~/.emacs.local/")
-(require 'kernc-mode)
-(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . kernc-mode))
+(require 'simpc-mode)
+(add-to-list 'auto-mode-alist '("\\.[hc]\\(pp\\)?\\'" . simpc-mode))
 
 ;; custom el loading ends
 

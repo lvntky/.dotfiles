@@ -1,0 +1,121 @@
+(undo-tree-save-format-version . 1)
+"ae672fc4168fbac9ac1eec2697a1b58d6b5f25df"
+[nil nil nil nil (26399 15204 768888 195000) 0 nil]
+([nil nil ((#("(require 'subr-x)
+
+(defvar kernc-mode-syntax-table
+  (let ((table (make-syntax-table)))
+    ;; C/C++ style comments
+    (modify-syntax-entry ?/ \". 124b\" table)
+    (modify-syntax-entry ?* \". 23\" table)
+    (modify-syntax-entry ?\\n \"> b\" table)
+    ;; Preprocessor stuff
+    (modify-syntax-entry ?# \".\" table)
+    ;; Chars are the same as strings
+    (modify-syntax-entry ?' \"\\\"\" table)
+    ;; Treat <> as punctuation (needed to highlight C++ keywords properly in template syntax)
+    (modify-syntax-entry ?< \".\" table)
+    (modify-syntax-entry ?> \".\" table)
+    (modify-syntax-entry ?& \".\" table)
+    (modify-syntax-entry ?% \".\" table)
+    table))
+
+(defun kernc-types ()
+  '(\"char\" \"int\" \"long\" \"short\" \"void\" \"bool\" \"float\" \"double\" \"signed\" \"unsigned\"
+    \"char16_t\" \"char32_t\" \"char8_t\"
+    \"int8_t\" \"uint8_t\" \"int16_t\" \"uint16_t\" \"int32_t\" \"uint32_t\" \"int64_t\" \"uint64_t\"
+    \"uintptr_t\"
+    \"size_t\"))
+
+(defun kernc-keywords ()
+  '(\"auto\" \"break\" \"case\" \"const\" \"continue\" \"default\" \"do\"
+    \"else\" \"enum\" \"extern\" \"for\" \"goto\" \"if\" \"register\"
+    \"return\"  \"sizeof\" \"static\" \"struct\" \"switch\" \"typedef\"
+    \"union\"  \"volatile\" \"while\" \"alignas\" \"alignof\" \"and\"
+    \"and_eq\" \"asm\" \"atomic_cancel\" \"atomic_commit\" \"atomic_noexcept\" \"bitand\"
+    \"bitor\" \"catch\"  \"class\" \"co_await\"
+    \"co_return\" \"co_yield\" \"compl\" \"concept\" \"const_cast\" \"consteval\" \"constexpr\"
+    \"constinit\" \"decltype\" \"delete\" \"dynamic_cast\" \"explicit\" \"export\" \"false\" 
+    \"friend\" \"inline\" \"mutable\" \"namespace\" \"new\" \"noexcept\" \"not\" \"not_eq\"
+    \"nullptr\" \"operator\" \"or\" \"or_eq\" \"private\" \"protected\" \"public\" \"reflexpr\"
+    \"reinterpret_cast\" \"requires\" \"static_assert\" \"static_cast\" \"synchronized\"
+    \"template\" \"this\" \"thread_local\" \"throw\" \"true\" \"try\" \"typeid\" \"typename\"
+    \"using\" \"virtual\" \"wchar_t\" \"xor\" \"xor_eq\"))
+
+(defun kernc-font-lock-keywords ()
+  (list
+   `(\"# *[#a-zA-Z0-9_]+\" . font-lock-preprocessor-face)
+   `(\"#.*include \\\\(\\\\(<\\\\|\\\"\\\\).*\\\\(>\\\\|\\\"\\\\)\\\\)\" . (1 font-lock-string-face))
+   `(,(regexp-opt (kernc-keywords) 'symbols) . font-lock-keyword-face)
+   `(,(regexp-opt (kernc-types) 'symbols) . font-lock-type-face)))
+
+(defun kernc--previous-non-empty-line ()
+  (save-excursion
+    (forward-line -1)
+    (while (and (not (bobp))
+                (string-empty-p
+                 (string-trim-right
+                  (thing-at-point 'line t))))
+      (forward-line -1))
+    (thing-at-point 'line t)))
+
+(defun kernc--indentation-of-previous-non-empty-line ()
+  (save-excursion
+    (forward-line -1)
+    (while (and (not (bobp))
+                (string-empty-p
+                 (string-trim-right
+                  (thing-at-point 'line t))))
+      (forward-line -1))
+    (current-indentation)))
+
+(defun kernc--desired-indentation ()
+  (let* ((cur-line (string-trim-right (thing-at-point 'line t)))
+         (prev-line (string-trim-right (kernc--previous-non-empty-line)))
+         (indent-len 8)  ;; Use tabs and 8-space wide indentation
+         (prev-indent (kernc--indentation-of-previous-non-empty-line)))
+    (cond
+     ;; Special handling for switch/case
+     ((string-match-p \"^\\\\s-*switch\\\\s-*(.+)\" prev-line)
+      prev-indent)
+     ((and (string-suffix-p \"{\" prev-line)
+           (string-prefix-p \"}\" (string-trim-left cur-line)))
+      prev-indent)
+     ((string-suffix-p \"{\" prev-line)
+      (+ prev-indent indent-len))
+     ((string-prefix-p \"}\" (string-trim-left cur-line))
+      (max (- prev-indent indent-len) 0))
+     ((string-suffix-p \":\" prev-line)
+      (if (string-suffix-p \":\" cur-line)
+          prev-indent
+        (+ prev-indent indent-len)))
+     ((string-suffix-p \":\" cur-line)
+      (max (- prev-indent indent-len) 0))
+     (t prev-indent))))
+
+(defun kernc-indent-line ()
+  \"Indent current line according to Linux kernel C style.\"
+  (interactive)
+  (when (not (bobp))
+    (let* ((desired-indentation
+            (kernc--desired-indentation))
+           (n (max (- (current-column) (current-indentation)) 0)))
+      (indent-line-to desired-indentation)
+      (if (zerop desired-indentation)
+          (insert-char ?\\t))  ;; Insert tab for indentation level 0
+      (forward-char n))))
+
+;;; Mode Definition
+(define-derived-mode kernc-mode prog-mode \"Kernel C\"
+  \"A major mode for editing C files with Linux kernel style.\"
+  :syntax-table kernc-mode-syntax-table
+  (setq-local font-lock-defaults '(kernc-font-lock-keywords))
+  (setq-local indent-line-function 'kernc-indent-line)
+  (setq-local comment-start \"// \")
+  (setq-local tab-width 8)  ;; Set tab width to 8 for Linux kernel style
+  (setq-local indent-tabs-mode t))  ;; Use tabs instead of spaces
+
+(provide 'kernc-mode)
+" 0 1 (face (rainbow-delimiters-depth-1-face) fontified t) 1 8 (face font-lock-keyword-face fontified t) 8 10 (fontified t) 10 16 (face font-lock-constant-face fontified t) 16 17 (face (rainbow-delimiters-depth-1-face) fontified t) 17 19 (fontified t) 19 20 (face (rainbow-delimiters-depth-1-face) fontified t) 20 26 (face font-lock-keyword-face fontified t) 26 27 (fontified t) 27 50 (face font-lock-variable-name-face fontified t) 50 53 (fontified t) 53 54 (face (rainbow-delimiters-depth-2-face) fontified t) 54 57 (face font-lock-keyword-face fontified t) 57 58 (fontified t) 58 59 (face (rainbow-delimiters-depth-3-face) fontified t) 59 60 (face (rainbow-delimiters-depth-4-face) fontified t) 60 66 (fontified t) 66 67 (face (rainbow-delimiters-depth-5-face) fontified t) 67 84 (fontified t) 84 85 (face (rainbow-delimiters-depth-5-face) fontified t) 85 86 (face (rainbow-delimiters-depth-4-face) fontified t) 86 87 (face (rainbow-delimiters-depth-3-face) fontified t) 87 92 (fontified t) 92 95 (face font-lock-comment-delimiter-face fontified t) 95 116 (face font-lock-comment-face fontified t) 116 120 (fontified t) 120 121 (face (rainbow-delimiters-depth-3-face) fontified t) 121 144 (fontified t) 144 152 (face font-lock-string-face fontified t) 152 158 (fontified t) 158 159 (face (rainbow-delimiters-depth-3-face) fontified t) 159 164 (fontified t) 164 165 (face (rainbow-delimiters-depth-3-face) fontified t) 165 188 (fontified t) 188 194 (face font-lock-string-face fontified t) 194 200 (fontified t) 200 201 (face (rainbow-delimiters-depth-3-face) fontified t) 201 206 (fontified t) 206 207 (face (rainbow-delimiters-depth-3-face) fontified t) 207 231 (fontified t) 231 236 (face font-lock-string-face fontified t) 236 242 (fontified t) 242 243 (face (rainbow-delimiters-depth-3-face) fontified t) 243 248 (fontified t) 248 251 (face font-lock-comment-delimiter-face fontified t) 251 270 (face font-lock-comment-face fontified t) 270 274 (fontified t) 274 275 (face (rainbow-delimiters-depth-3-face) fontified t) 275 298 (fontified t) 298 301 (face font-lock-string-face fontified t) 301 307 (fontified t) 307 308 (face (rainbow-delimiters-depth-3-face) fontified t) 308 313 (fontified t) 313 316 (face font-lock-comment-delimiter-face fontified t) 316 346 (face font-lock-comment-face fontified t) 346 350 (fontified t) 350 351 (face (rainbow-delimiters-depth-3-face) fontified t) 351 374 (fontified t) 374 378 (face font-lock-string-face fontified t) 378 384 (fontified t) 384 385 (face (rainbow-delimiters-depth-3-face) fontified t) 385 390 (fontified t) 390 393 (face font-lock-comment-delimiter-face fontified t) 393 480 (face font-lock-comment-face fontified t) 480 484 (fontified t) 484 485 (face (rainbow-delimiters-depth-3-face) fontified t) 485 508 (fontified t) 508 511 (face font-lock-string-face fontified t) 511 517 (fontified t) 517 518 (face (rainbow-delimiters-depth-3-face) fontified t) 518 523 (fontified t) 523 524 (face (rainbow-delimiters-depth-3-face) fontified t) 524 547 (fontified t) 547 550 (face font-lock-string-face fontified t) 550 556 (fontified t) 556 557 (face (rainbow-delimiters-depth-3-face) fontified t) 557 562 (fontified t) 562 563 (face (rainbow-delimiters-depth-3-face) fontified t) 563 586 (fontified t) 586 589 (face font-lock-string-face fontified t) 589 595 (fontified t) 595 596 (face (rainbow-delimiters-depth-3-face) fontified t) 596 601 (fontified t) 601 602 (face (rainbow-delimiters-depth-3-face) fontified t) 602 625 (fontified t) 625 628 (face font-lock-string-face fontified t) 628 634 (fontified t) 634 635 (face (rainbow-delimiters-depth-3-face) fontified t) 635 645 (fontified t) 645 646 (face (rainbow-delimiters-depth-2-face) fontified t) 646 647 (face (rainbow-delimiters-depth-1-face) fontified t) 647 649 (fontified t) 649 650 (face (rainbow-delimiters-depth-1-face) fontified t) 650 655 (face font-lock-keyword-face fontified t) 655 656 (fontified t) 656 667 (face font-lock-function-name-face fontified t) 667 668 (fontified t) 668 669 (face (rainbow-delimiters-depth-2-face) fontified t) 669 670 (face (rainbow-delimiters-depth-2-face) fontified t) 670 674 (fontified t) 674 675 (face (rainbow-delimiters-depth-2-face) fontified t) 675 681 (face font-lock-string-face fontified t) 681 682 (fontified t) 682 687 (face font-lock-string-face fontified t) 687 688 (fontified t) 688 694 (face font-lock-string-face fontified t) 694 695 (fontified t) 695 702 (face font-lock-string-face fontified t) 702 703 (fontified t) 703 709 (face font-lock-string-face fontified t) 709 710 (fontified t) 710 716 (face font-lock-string-face fontified t) 716 717 (fontified t) 717 724 (face font-lock-string-face fontified t) 724 725 (fontified t) 725 733 (face font-lock-string-face fontified t) 733 734 (fontified t) 734 742 (face font-lock-string-face fontified t) 742 743 (fontified t) 743 753 (face font-lock-string-face fontified t) 753 758 (fontified t) 758 768 (face font-lock-string-face fontified t) 768 769 (fontified t) 769 779 (face font-lock-string-face fontified t) 779 780 (fontified t) 780 789 (face font-lock-string-face fontified t) 789 794 (fontified t) 794 802 (face font-lock-string-face fontified t) 802 803 (fontified t) 803 812 (face font-lock-string-face fontified t) 812 813 (fontified t) 813 822 (face font-lock-string-face fontified t) 822 823 (fontified t) 823 833 (face font-lock-string-face fontified t) 833 834 (fontified t) 834 843 (face font-lock-string-face fontified t) 843 844 (fontified t) 844 854 (face font-lock-string-face fontified t) 854 855 (fontified t) 855 864 (face font-lock-string-face fontified t) 864 865 (fontified t) 865 875 (face font-lock-string-face fontified t) 875 880 (fontified t) 880 891 (face font-lock-string-face fontified t) 891 896 (fontified t) 896 904 (face font-lock-string-face fontified t) 904 905 (face (rainbow-delimiters-depth-2-face) fontified t) 905 906 (face (rainbow-delimiters-depth-1-face) fontified t) 906 908 (fontified t) 908 909 (face (rainbow-delimiters-depth-1-face) fontified t) 909 914 (face font-lock-keyword-face fontified t) 914 915 (fontified t) 915 929 (face font-lock-function-name-face fontified t) 929 930 (fontified t) 930 931 (face (rainbow-delimiters-depth-2-face) fontified t) 931 932 (face (rainbow-delimiters-depth-2-face) fontified t) 932 936 (fontified t) 936 937 (face (rainbow-delimiters-depth-2-face) fontified t) 937 943 (face font-lock-string-face fontified t) 943 944 (fontified t) 944 951 (face font-lock-string-face fontified t) 951 952 (fontified t) 952 958 (face font-lock-string-face fontified t) 958 959 (fontified t) 959 966 (face font-lock-string-face fontified t) 966 967 (fontified t) 967 977 (face font-lock-string-face fontified t) 977 978 (fontified t) 978 987 (face font-lock-string-face fontified t) 987 988 (fontified t) 988 992 (face font-lock-string-face fontified t) 992 997 (fontified t) 997 1003 (face font-lock-string-face fontified t) 1003 1004 (fontified t) 1004 1010 (face font-lock-string-face fontified t) 1010 1011 (fontified t) 1011 1019 (face font-lock-string-face fontified t) 1019 1020 (fontified t) 1020 1025 (face font-lock-string-face fontified t) 1025 1026 (fontified t) 1026 1032 (face font-lock-string-face fontified t) 1032 1033 (fontified t) 1033 1037 (face font-lock-string-face fontified t) 1037 1038 (fontified t) 1038 1048 (face font-lock-string-face fontified t) 1048 1053 (fontified t) 1053 1061 (face font-lock-string-face fontified t) 1061 1063 (fontified t) 1063 1071 (face font-lock-string-face fontified t) 1071 1072 (fontified t) 1072 1080 (face font-lock-string-face fontified t) 1080 1081 (fontified t) 1081 1089 (face font-lock-string-face fontified t) 1089 1090 (fontified t) 1090 1098 (face font-lock-string-face fontified t) 1098 1099 (fontified t) 1099 1108 (face font-lock-string-face fontified t) 1108 1113 (fontified t) 1113 1120 (face font-lock-string-face fontified t) 1120 1122 (fontified t) 1122 1132 (face font-lock-string-face fontified t) 1132 1133 (fontified t) 1133 1140 (face font-lock-string-face fontified t) 1140 1141 (fontified t) 1141 1150 (face font-lock-string-face fontified t) 1150 1151 (fontified t) 1151 1160 (face font-lock-string-face fontified t) 1160 1161 (fontified t) 1161 1166 (face font-lock-string-face fontified t) 1166 1171 (fontified t) 1171 1179 (face font-lock-string-face fontified t) 1179 1180 (fontified t) 1180 1185 (face font-lock-string-face fontified t) 1185 1186 (fontified t) 1186 1201 (face font-lock-string-face fontified t) 1201 1202 (fontified t) 1202 1217 (face font-lock-string-face fontified t) 1217 1218 (fontified t) 1218 1235 (face font-lock-string-face fontified t) 1235 1236 (fontified t) 1236 1244 (face font-lock-string-face fontified t) 1244 1249 (fontified t) 1249 1256 (face font-lock-string-face fontified t) 1256 1257 (fontified t) 1257 1264 (face font-lock-string-face fontified t) 1264 1266 (fontified t) 1266 1273 (face font-lock-string-face fontified t) 1273 1274 (fontified t) 1274 1284 (face font-lock-string-face fontified t) 1284 1289 (fontified t) 1289 1300 (face font-lock-string-face fontified t) 1300 1301 (fontified t) 1301 1311 (face font-lock-string-face fontified t) 1311 1312 (fontified t) 1312 1319 (face font-lock-string-face fontified t) 1319 1320 (fontified t) 1320 1329 (face font-lock-string-face fontified t) 1329 1330 (fontified t) 1330 1342 (face font-lock-string-face fontified t) 1342 1343 (fontified t) 1343 1354 (face font-lock-string-face fontified t) 1354 1355 (fontified t) 1355 1366 (face font-lock-string-face fontified t) 1366 1371 (fontified t) 1371 1382 (face font-lock-string-face fontified t) 1382 1383 (fontified t) 1383 1393 (face font-lock-string-face fontified t) 1393 1394 (fontified t) 1394 1402 (face font-lock-string-face fontified t) 1402 1403 (fontified t) 1403 1417 (face font-lock-string-face fontified t) 1417 1418 (fontified t) 1418 1428 (face font-lock-string-face fontified t) 1428 1429 (fontified t) 1429 1437 (face font-lock-string-face fontified t) 1437 1438 (fontified t) 1438 1445 (face font-lock-string-face fontified t) 1445 1451 (fontified t) 1451 1459 (face font-lock-string-face fontified t) 1459 1460 (fontified t) 1460 1468 (face font-lock-string-face fontified t) 1468 1469 (fontified t) 1469 1478 (face font-lock-string-face fontified t) 1478 1479 (fontified t) 1479 1490 (face font-lock-string-face fontified t) 1490 1491 (fontified t) 1491 1496 (face font-lock-string-face fontified t) 1496 1497 (fontified t) 1497 1500 (face font-lock-string-face fontified t) 1500 1507 (face font-lock-string-face fontified t) 1507 1508 (fontified t) 1508 1513 (face font-lock-string-face fontified t) 1513 1514 (fontified t) 1514 1522 (face font-lock-string-face fontified t) 1522 1523 (fontified t) 1523 4609 (fontified nil)) . 1) (undo-tree-id0 . -4609) (t 26399 14754 636476 162000)) nil (26399 15204 768885 994000) 0 nil])
+([nil current ((nil rear-nonsticky nil 5097 . 5098) (nil fontified nil 1 . 5098) (1 . 5098)) nil (26399 15204 768870 47000) 0 nil])
+nil
