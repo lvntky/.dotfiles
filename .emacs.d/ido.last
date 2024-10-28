@@ -1,0 +1,30 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/" . "levent/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/levent/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "test.c"
+ ".emacs"
+ ".emacs.custom.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/levent/" (26397 4563 94716 236000) ".zsh_history" "Software/" ".zshrc.pre-oh-my-zsh" ".emacs.custom.el" ".Xresources" "Downloads/" "../" ".xinitrc" ".vscode/" "test" ".fehbg" ".erc/" ".cache/" ".bash_profile" ".emacs.d/" ".bash_logout" "Thesis/" ".config/" "test2.c" ".zcompdump-dev-5.9" ".swt/" ".oh-my-zsh/" ".emacs" ".bashrc" "./" ".stm32cubemx/" ".emacs.rc/" ".p10k.zsh" ".zcompdump-dev-5.9.zwc" ".stmcufinder/" ".eclipse/" ".gitconfig" "Documents/" ".var/" ".pki/" "#test.c#" ".bash_history" ".mozilla/" "Projects/" ".cargo/" ".dosbox/" ".java/" ".suckless/" ".vim/" "Books/" "test.c" ".emacs.local/" ".zshrc" "Blog/" ".viminfo" ".Xauthority" ".tmux.conf" ".stm32cubeide/" "Image/" ".bash_safe_source" "test2.c~" ".ssh/" ".conan2/" ".emacs.custom.el~" ".shell.pre-oh-my-zsh" ".python_history" ".stmcube/" ".emacs~" "Study/" ".platformio/" ".wget-hsts" ".emacs_old_backup/" ".vscode-oss/" "test.c~" ".local/" ".gnupg/")
+
+ ("/home/" (26165 11535 982211 89000) "../" "./" "levent/" "lost+found/")
+
+ ("/home/levent/.emacs.local/" (26397 501 995139 479000) "../" "./" "simpc-mode.el")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

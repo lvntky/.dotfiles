@@ -1,0 +1,24 @@
+(undo-tree-save-format-version . 1)
+"3425b958c955b067557c7aa59da24795568cf016"
+[nil nil nil nil (26397 12521 978085 781000) 0 nil]
+([nil nil ((3242 . 3244) (t 26397 12433 784399 317000)) nil (26397 12521 978084 487000) 0 nil])
+([nil nil ((nil rear-nonsticky nil 3814 . 3815) (nil fontified nil 3244 . 3815) (3244 . 3815)) nil (26397 12521 978080 183000) 0 nil])
+([nil nil ((3815 . 3816) (t 26397 12522 26727 682000)) nil (26397 12698 78580 791000) 0 nil])
+([nil nil ((#("
+;; Customize ibuffer to display index numbers
+(setq ibuffer-formats
+      '((mark modified read-only \" \"
+              (name 18 18 :left :elide) ; buffer name
+              \" \"
+              (size 9 -1 :right)        ; buffer size
+              \" \"
+              (index 3 -1 :right)       ; buffer index
+              \" \"
+              (mode 16 16 :left :elide) ; major mode
+              \" \"
+              filename-and-process)))   ; file or process associated with the buffer
+n" 0 1 (fontified t) 1 4 (face font-lock-comment-delimiter-face fontified t) 4 47 (face font-lock-comment-face fontified t) 47 48 (face (rainbow-delimiters-depth-1-face) fontified t) 48 52 (face font-lock-keyword-face fontified t) 52 76 (fontified t) 76 77 (face (rainbow-delimiters-depth-2-face) fontified t) 77 78 (face (rainbow-delimiters-depth-3-face) fontified t) 78 102 (fontified t) 102 105 (face font-lock-string-face fontified t) 105 120 (fontified t) 120 121 (face (rainbow-delimiters-depth-4-face) fontified t) 121 132 (fontified t) 132 137 (face font-lock-builtin-face fontified t) 137 138 (fontified t) 138 144 (face font-lock-builtin-face fontified t) 144 145 (face (rainbow-delimiters-depth-4-face) fontified t) 145 146 (fontified t) 146 148 (face font-lock-comment-delimiter-face fontified t) 148 160 (face font-lock-comment-face fontified t) 160 174 (fontified t) 174 177 (face font-lock-string-face fontified t) 177 192 (fontified t) 192 193 (face (rainbow-delimiters-depth-4-face) fontified t) 193 203 (fontified t) 203 209 (face font-lock-builtin-face fontified t) 209 210 (face (rainbow-delimiters-depth-4-face) fontified t) 210 218 (fontified t) 218 220 (face font-lock-comment-delimiter-face fontified t) 220 232 (face font-lock-comment-face fontified t) 232 246 (fontified t) 246 249 (face font-lock-string-face fontified t) 249 264 (fontified t) 264 265 (face (rainbow-delimiters-depth-4-face) fontified t) 265 276 (fontified t) 276 282 (face font-lock-builtin-face fontified t) 282 283 (face (rainbow-delimiters-depth-4-face) fontified t) 283 290 (fontified t) 290 292 (face font-lock-comment-delimiter-face fontified t) 292 305 (face font-lock-comment-face fontified t) 305 319 (fontified t) 319 322 (face font-lock-string-face fontified t) 322 337 (fontified t) 337 338 (face (rainbow-delimiters-depth-4-face) fontified t) 338 349 (fontified t) 349 354 (face font-lock-builtin-face fontified t) 354 355 (fontified t) 355 361 (face font-lock-builtin-face fontified t) 361 362 (face (rainbow-delimiters-depth-4-face) fontified t) 362 363 (fontified t) 363 365 (face font-lock-comment-delimiter-face fontified t) 365 376 (face font-lock-comment-face fontified t) 376 390 (fontified t) 390 393 (face font-lock-string-face fontified t) 393 428 (fontified t) 428 429 (face (rainbow-delimiters-depth-3-face) fontified t) 429 430 (face (rainbow-delimiters-depth-2-face) fontified t) 430 431 (face (rainbow-delimiters-depth-1-face) fontified t) 431 434 (fontified t) 434 436 (face font-lock-comment-delimiter-face fontified t) 436 479 (face font-lock-comment-face fontified t) 479 480 (fontified t)) . 3336) (undo-tree-id0 . -394) (undo-tree-id1 . -394) (undo-tree-id2 . -394) (undo-tree-id3 . -394) (undo-tree-id4 . -394) (undo-tree-id5 . -394) (undo-tree-id6 . -394) (undo-tree-id7 . -394) (undo-tree-id8 . -394) (undo-tree-id9 . -394) (undo-tree-id10 . -394) (undo-tree-id11 . -394) (undo-tree-id12 . -480) (undo-tree-id13 . -480) (undo-tree-id14 . -480) (undo-tree-id15 . -480) (undo-tree-id16 . -480)) nil (26397 12698 78575 857000) 0 nil])
+([nil nil ((3336 . 3337) (t 26397 12698 135198 128000)) nil (26397 22794 809802 395000) 0 nil])
+([nil nil ((nil rear-nonsticky nil 3461 . 3462) (nil fontified nil 3337 . 3462) (3337 . 3462)) nil (26397 22794 809800 340000) 0 nil])
+([nil current ((3462 . 3463)) nil (26397 22794 809795 457000) 0 nil])
+nil

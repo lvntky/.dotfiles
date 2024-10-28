@@ -1,0 +1,30 @@
+
+;; ----- smex-history -----
+(
+ compile
+ dired
+ buffer-menu
+ nasm-mode
+ package-list-packages
+ ibuffer
+ dired-other-window
+)
+
+;; ----- smex-data -----
+(
+ (package-list-packages . 4)
+ (package-install . 4)
+ (customize-themes . 1)
+ (customize-variable . 1)
+ (rainbow-delimiters-mode . 2)
+ (compile . 25)
+ (projectile-ag . 1)
+ (dired . 5)
+ (dired-other-window . 7)
+ (clang-format . 3)
+ (term . 1)
+ (undo-tree-mode . 1)
+ (buffer-menu . 18)
+ (ibuffer . 1)
+ (nasm-mode . 3)
+)

@@ -1,0 +1,6 @@
+(undo-tree-save-format-version . 1)
+"9b43439adb9051db2d0a3a99fa7dcf2b5c408662"
+[nil nil nil nil (26397 22278 50500 154000) 0 nil]
+([nil nil ((#("~/Study/asm/programming_boot_sector_games/dosprog" 0 49 (fontified t)) . 11280) (undo-tree-id0 . -49) (undo-tree-id1 . -49) (t 26248 26071 305213 786000)) nil (26397 22278 50498 444000) 0 nil])
+([nil current ((nil rear-nonsticky nil 11312 . 11313) (nil fontified nil 11280 . 11313) (11280 . 11313)) nil (26397 22278 50485 373000) 0 nil])
+nil

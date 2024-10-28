@@ -1,0 +1,26 @@
+(undo-tree-save-format-version . 1)
+"f8736ac71ea93319b2a1911658c6d8ea1585df91"
+[nil nil nil nil (26397 12590 336725 555000) 0 nil]
+([nil nil ((200 . 201) (t 26397 11756 29057 581000)) nil (26397 12590 336724 753000) 0 nil])
+([nil nil ((200 . 201)) nil (26397 12590 336724 55000) 0 nil])
+([nil nil ((201 . 212)) nil (26397 12590 336723 624000) 0 nil])
+([nil nil ((212 . 213)) nil (26397 12590 336723 228000) 0 nil])
+([nil nil ((213 . 217)) nil (26397 12590 336722 612000) 0 nil])
+([nil nil ((217 . 218)) nil (26397 12590 336722 127000) 0 nil])
+([nil nil ((#("J" 0 1 (fontified t)) . -215) (undo-tree-id6 . -1) (#("N" 0 1 (fontified t)) . -216) (undo-tree-id7 . -1) (#("
+" 0 1 (fontified t)) . -217) (undo-tree-id8 . -1) (undo-tree-id9 . 1) (undo-tree-id10 . -1) 218) nil (26397 12590 336721 158000) 0 nil])
+([nil nil ((215 . 216)) nil (26397 12590 336717 635000) 0 nil])
+([nil nil ((216 . 221)) nil (26397 12590 336717 277000) 0 nil])
+([nil nil ((221 . 224)) nil (26397 12590 336716 796000) 0 nil])
+([nil nil ((224 . 233)) nil (26397 12590 336716 259000) 0 nil])
+([nil nil ((233 . 235)) nil (26397 12590 336715 623000) 0 nil])
+([nil nil ((235 . 236)) nil (26397 12590 336714 944000) 0 nil])
+([nil nil ((#("
+" 0 1 (fontified t)) . 236) (undo-tree-id2 . 1) (undo-tree-id3 . -1) (undo-tree-id4 . 1) (undo-tree-id5 . -1)) nil (26397 12590 336714 163000) 0 nil])
+([nil nil ((236 . 242)) nil (26397 12590 336711 217000) 0 nil])
+([nil nil ((#("JANSJN" 0 6 (fontified t)) . 236) (undo-tree-id0 . -6) (undo-tree-id1 . -6)) nil (26397 12590 336709 742000) 0 nil])
+([nil nil ((236 . 243)) nil (26397 12590 336699 543000) 0 nil])
+([nil nil ((243 . 244)) nil (26397 12590 336699 2000) 0 nil])
+([nil nil ((244 . 245)) nil (26397 12590 336698 22000) 0 nil])
+([nil current ((nil rear-nonsticky nil 252 . 253) (nil fontified nil 245 . 253) (245 . 253)) nil (26397 12590 336694 823000) 0 nil])
+nil

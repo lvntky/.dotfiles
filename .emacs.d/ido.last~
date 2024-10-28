@@ -1,0 +1,55 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/levent/Projects/dennis/" . "src/")
+ ("/home/levent/Projects/" . "dennis/")
+ ("/home/levent/" . "Projects/")
+ ("/home/" . "levent/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/levent/"
+ "/home/levent/Projects/dennis/src/"
+ "/home/levent/Projects/dennis/include/"
+ "/home/levent/Projects/dennis/"
+ "/home/levent/Projects/dennis/bin/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ ".emacs"
+ "l_lexer.c"
+ "ast_node.h"
+ "common.h"
+ "l_lexer.h"
+ "dennis.c"
+ "dennis"
+ "test.c"
+ ".emacs.custom.el"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/levent/" (26397 12191 819933 741000) ".zsh_history" "Software/" ".zshrc.pre-oh-my-zsh" ".emacs.custom.el" ".Xresources" "Downloads/" "../" ".xinitrc" ".vscode/" "test/" ".fehbg" ".erc/" ".cache/" ".bash_profile" ".emacs.d/" ".bash_logout" "Thesis/" ".config/" ".zcompdump-dev-5.9" ".swt/" ".oh-my-zsh/" ".emacs" ".bashrc" "./" ".stm32cubemx/" ".emacs.rc/" ".p10k.zsh" ".zcompdump-dev-5.9.zwc" ".stmcufinder/" ".eclipse/" ".gitconfig" "Documents/" ".var/" ".pki/" "core.3899" ".bash_history" ".mozilla/" "Projects/" ".cargo/" ".dosbox/" ".java/" ".suckless/" ".vim/" "Books/" ".emacs.local/" ".zshrc" "Blog/" ".viminfo" ".Xauthority" ".tmux.conf" ".stm32cubeide/" "Image/" ".bash_safe_source" ".ssh/" ".conan2/" ".emacs.custom.el~" ".shell.pre-oh-my-zsh" ".python_history" ".stmcube/" ".emacs~" "Study/" ".platformio/" ".wget-hsts" ".emacs_old_backup/" ".vscode-oss/" ".local/" ".gnupg/")
+
+ ("/home/levent/Projects/dennis/src/" (26397 12024 359529 282000) "../" "./" "l_lexer.c" "dennis.c")
+
+ ("/home/levent/Projects/dennis/" (26397 11957 492718 482000) "../" "test/" "Makefile" "src/" "./" "include/" "README.md" "obj/" ".gitignore" ".clang-format" ".git/" "LICENSE.md")
+
+ ("/home/levent/Projects/dennis/include/" (26397 11756 69057 624000) "../" "./" "l_lexer.h" "common.h" "dennis.h" "ast_node.h")
+
+ ("/home/levent/Projects/dennis/bin/" (26397 11727 89029 797000) "../" "./" "dennis")
+
+ ("/home/levent/Projects/ArtilleryOS/" (26308 48430 600801 96000) "../" "Makefile" "scripts/" "build/" "src/" "./" "README.md" "LICENSE" "docs/" ".gitignore" ".clang-format" "grub.cfg" ".git/")
+
+ ("/home/levent/Projects/" (26397 5828 844619 79000) "noditto/" "mortar/" "../" "birdos/" "CVM/" "ccontainer/" "./" "zendm/" "Siren/" "c6502/" "dennis/" "ArtilleryOS/" "winfb/")
+
+ ("/home/" (26165 11535 982211 89000) "../" "./" "levent/" "lost+found/")
+
+ ("/home/levent/.emacs.local/" (26397 501 995139 479000) "../" "./" "simpc-mode.el")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

@@ -1,0 +1,58 @@
+(undo-tree-save-format-version . 1)
+"757575eb18aeea91e5f78d9dad87b89a6aeee7e8"
+[nil nil nil nil (26397 13001 796446 720000) 0 nil]
+([nil nil ((606 . 845) (#("(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )" 0 239 (fontified nil)) . -606) (603 . 605) (#("
+" 0 1 (fontified nil)) . -603) (452 . 604) (#(" " 0 1 (fontified nil)) . 452) (391 . 453) (#("
+" 0 1 (fontified nil)) . -391) (310 . 392) (#(" " 0 1 (fontified nil)) . 310) (1 . 311) (#("(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(gruber-darker))
+ '(custom-safe-themes
+   '(\"e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7\" default))
+ '(inhibit-startup-screen nil)
+ '(package-selected-packages
+   '(undo-tree clang-format projectile rainbow-delimiters company yasnippet smex multiple-cursors guru-mode gruber-darker-theme dash-functional)))" 0 598 (fontified nil)) . -1) (t 26397 12137 99796 208000)) nil (26397 13001 796441 650000) 0 nil])
+([nil nil ((616 . 855) (#("(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )" 0 239 (fontified nil)) . -616) (613 . 615) (#("
+" 0 1 (fontified nil)) . -613) (452 . 614) (#(" " 0 1 (fontified nil)) . 452) (391 . 453) (#("
+" 0 1 (fontified nil)) . -391) (310 . 392) (#(" " 0 1 (fontified nil)) . 310) (1 . 311) (#("(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(gruber-darker))
+ '(custom-safe-themes
+   '(\"e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7\" default))
+ '(inhibit-startup-screen nil)
+ '(package-selected-packages
+   '(magit undo-tree clang-format projectile rainbow-delimiters company yasnippet smex multiple-cursors guru-mode gruber-darker-theme dash-functional)))" 0 604 (fontified nil)) . -1) (t 26397 13001 826936 76000)) nil (26397 21310 482014 146000) 0 nil])
+([nil current ((626 . 865) (#("(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )" 0 239 (fontified nil)) . -626) (623 . 625) (#("
+" 0 1 (fontified nil)) . -623) (452 . 624) (#(" " 0 1 (fontified nil)) . 452) (391 . 453) (#("
+" 0 1 (fontified nil)) . -391) (310 . 392) (#(" " 0 1 (fontified nil)) . 310) (1 . 311) (#("(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(gruber-darker))
+ '(custom-safe-themes
+   '(\"e13beeb34b932f309fb2c360a04a460821ca99fe58f69e65557d6c1b10ba18c7\" default))
+ '(inhibit-startup-screen nil)
+ '(package-selected-packages
+   '(nasm-mode magit undo-tree clang-format projectile rainbow-delimiters company yasnippet smex multiple-cursors guru-mode gruber-darker-theme dash-functional)))" 0 614 (fontified nil)) . -1) (t 26397 21310 532978 214000)) nil (26397 22968 124339 169000) 0 nil])
+nil
