@@ -17,7 +17,7 @@
  (customize-themes . 3)
  (customize-variable . 1)
  (rainbow-delimiters-mode . 2)
- (compile . 36)
+ (compile . 38)
  (projectile-ag . 1)
  (dired . 5)
  (dired-other-window . 7)

@@ -23,6 +23,7 @@
 (global-display-line-numbers-mode 1)
 (ido-mode 1)
 (ido-everywhere 1)
+(delete-selection-mode 1)
 ;;(buffer-number-mode 1)
 ;; Ensure guru-mode is available
 (require 'guru-mode)
