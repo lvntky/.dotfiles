@@ -1,12 +1,12 @@
 
 ;; ----- smex-history -----
 (
+ nasm-mode
  compile
  buffer-menu
  customize-themes
  package-list-packages
  dired
- nasm-mode
  ibuffer
 )
 
@@ -26,5 +26,5 @@
  (undo-tree-mode . 1)
  (buffer-menu . 19)
  (ibuffer . 1)
- (nasm-mode . 3)
+ (nasm-mode . 4)
 )
