@@ -1,0 +1,19 @@
+[font]
+size = 11
+
+  [font.normal]
+  family = "Martian Mono"
+  style = "Regular"
+
+  [font.bold]
+  family = "Martian Mono"
+  style = "Bold"
+
+  [font.italic]
+  family = "Martian Mono"
+  style = "Italic"
+
+  [font.offset]
+  x = 0
+  y = 0
+

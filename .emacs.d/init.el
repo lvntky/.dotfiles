@@ -46,7 +46,6 @@
 
 (column-number-mode)
 (global-display-line-numbers-mode t)
-(setq display-line-numbers-type 'relative)
 
 (dolist (mode '(org-mode-hook
                 term-mode-hook
