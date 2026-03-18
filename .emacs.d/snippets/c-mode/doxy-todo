@@ -1,0 +1,5 @@
+# name: doxygen todo
+# key: dt
+# --
+/** @todo ${1:TODO description} */
+$0

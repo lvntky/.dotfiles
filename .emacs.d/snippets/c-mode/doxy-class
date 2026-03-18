@@ -1,0 +1,10 @@
+# name: doxygen class comment
+# key: dc
+# --
+/**
+ * @class ${1:`(thing-at-point 'symbol)`}
+ * @brief ${2:Brief description}
+ *
+ * ${3:Detailed description}
+ */
+$0

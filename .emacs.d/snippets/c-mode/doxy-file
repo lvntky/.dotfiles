@@ -1,0 +1,13 @@
+# name: doxygen file header
+# key: dfile
+# --
+/**
+ * @file ${1:`(buffer-name)`}
+ * @author ${2:Name}
+ * @brief ${3:Brief description}
+ * @version ${4:0.1}
+ * @date ${5:`(format-time-string "%Y-%m-%d")`}
+ *
+ * ${6:Detailed description}
+ */
+$0

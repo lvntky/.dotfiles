@@ -1,72 +1,64 @@
-! ---------- urxvt minimal & fast ----------
-URxvt.termName:                rxvt-unicode-256color
-URxvt.depth:                   32
-URxvt.geometry:                100x32
-URxvt.loginShell:              true
-URxvt.saveLines:               100000
-URxvt.scrollBar:               0
-URxvt.scrollTtyOutput:         false
-URxvt.scrollTtyKeypress:       true
-URxvt.scrollWithBuffer:        true
-URxvt.cursorBlink:             false
-URxvt.internalBorder:          8
-URxvt.lineSpace:               1
-URxvt.letterSpace:             0
-URxvt.iso14755:                false
-URxvt.iso14755_52:             false
+Xft.dpi:    96
+Xft.antialias:  1
+Xft.hinting:    1
+Xft.hintstyle:  hintmedium
 
-URxvt.font:        xft:Martian Mono:style=Regular:pixelsize=16, xft:DejaVu Sans Mono:style=Book:pixelsize=16
-URxvt.boldFont:    xft:Martian Mono:style=Bold:pixelsize=16,    xft:DejaVu Sans Mono:style=Bold:pixelsize=16
-URxvt.italicFont:  xft:Martian Mono:style=Italic:pixelsize=16,  xft:DejaVu Sans Mono:style=Oblique:pixelsize=16
+URxvt*depth: 32
+URxvt.transparent: false
+URxvt.font: xft:Martian Mono:size=20
+URxvt.scrollBar: false
 
-! UTF-8
-URxvt.locale:      true
-URxvt.imLocale:    en_US.UTF-8
+! Gruber-Darker
+URxvt*foreground: #e4e4ef
+URxvt*background: #181818
+URxvt*color0:  #2E3436
+URxvt*color1:  #a40000
+URxvt*color2:  #4E9A06
+URxvt*color3:  #C4A000
+URxvt*color4:  #3465A4
+URxvt*color5:  #75507B
+URxvt*color6:  #ce5c00
+URxvt*color7:  #babdb9
+URxvt*color8:  #555753
+URxvt*color9:  #EF2929
+URxvt*color10: #8AE234
+URxvt*color11: #FCE94F
+URxvt*color12: #729FCF
+URxvt*color13: #AD7FA8
+URxvt*color14: #fcaf3e
+URxvt*color15: #EEEEEC
 
-! Perl extensions: clipboard, url-select, keyboard-select
-URxvt.perl-ext-common: default,clipboard,url-select,keyboard-select
-! Kopyala-yapıştır (Ctrl+Shift+C/V)
-URxvt.keysym.C-S-c: perl:clipboard:copy
-URxvt.keysym.C-S-v: perl:clipboard:paste
-! Seçimi klavye ile başlat / bitir
-URxvt.keysym.M-s:   perl:keyboard-select:activate
-! URL seçimi (Ctrl+Shift+U)
-URxvt.keysym.C-S-u: perl:url-select:select_next
-URxvt.url-select.launcher:  xdg-open
-URxvt.url-select.underline: true
+! ! Zenburn
+! URxvt*background: #3f3f3f
+! URxvt*foreground: #dcdccc
+! URxvt*cursorColor: #aaaaaa
+! ! URxvt*colorUL: #366060
+! ! URxvt*underlineColor: #dfaf8f
+! URxvt*color0: #3f3f3f
+! URxvt*color1: #cc9393
+! URxvt*color2: #7f9f7f
+! URxvt*color3: #d0bf8f
+! URxvt*color4: #6ca0a3
+! URxvt*color5: #dc8cc3
+! URxvt*color6: #93e0e3
+! URxvt*color7: #dcdccc
+! URxvt*color8: #989890
+! URxvt*color9: #dca3a3
+! URxvt*color10: #bfebbf
+! URxvt*color11: #f0dfaf
+! URxvt*color12: #8cd0d3
+! URxvt*color13: #dc8cc3
+! URxvt*color14: #93e0e3
+! URxvt*color15: #ffffff
 
-! Mouse wheel davranışı (sayfa bazlı hızlı kaydırma)
-URxvt.keysym.Shift-Up:     command:\033[1;2A
-URxvt.keysym.Shift-Down:   command:\033[1;2B
-URxvt.keysym.Prior:        command:\033[5~
-URxvt.keysym.Next:         command:\033[6~
+! Adwaita
+! URxvt*background: #EDEDED
+! URxvt*foreground: #2E3436
 
-URxvt*foreground:   #ebdbb2
-URxvt*background:   #1d2021
-URxvt*cursorColor:  #d79921
+URxvt.perl-ext-common:  resize-font,matcher
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
 
-! black        red        green      yellow     blue       magenta    cyan       white
-URxvt*color0:  #282828
-URxvt*color1:  #cc241d
-URxvt*color2:  #98971a
-URxvt*color3:  #d79921
-URxvt*color4:  #458588
-URxvt*color5:  #b16286
-URxvt*color6:  #689d6a
-URxvt*color7:  #a89984
-
-URxvt*color8:  #3c3836
-URxvt*color9:  #fb4934
-URxvt*color10: #b8bb26
-URxvt*color11: #fabd2f
-URxvt*color12: #83a598
-URxvt*color13: #d3869b
-URxvt*color14: #8ec07c
-URxvt*color15: #ebdbb2
-
-! Xft (font render)
-Xft.antialias: 1
-Xft.hinting:   1
-Xft.hintstyle: hintfull
-Xft.rgba:      rgb
-! Xft.dpi:     96   ! (gerekirse ekran DPI’na göre aç)
+URxvt.keysym.C-minus:  resize-font:smaller
+URxvt.keysym.C-equal:  resize-font:bigger
+URxvt.keysym.C-0:      resize-font:reset
