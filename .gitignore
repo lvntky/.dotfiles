@@ -3,6 +3,12 @@
 .emacs.d/undo-tree-history/
 .emacs.d/undo-tree-history/
 
+.emacs.d/eln-cache/
+.emacs.d/elpa/
+.emacs.d/places
+.emacs.d/recentf    
+.emacs.d/auto-save-list/
+
 .oh-my-zsh/
 .config/Code/
 

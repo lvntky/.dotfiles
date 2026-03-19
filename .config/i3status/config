@@ -13,7 +13,7 @@ order += "wireless wlp2s0"        # change iface name
 order += "battery all"
 order += "memory"
 order += "disk /"
-order += "disk /home"
+#order += "disk /home"
 order += "read_file Updates"
 order += "tztime local"
 
@@ -50,11 +50,6 @@ memory {
 
 disk "/" {
     format = "/: %avail"
-    low_threshold = 10
-}
-
-disk "/home" {
-    format = "~: %avail"
     low_threshold = 10
 }
 
