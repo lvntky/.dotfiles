@@ -110,11 +110,4 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-export PATH="$PATH:/home/levent/.artillery-compiler/bin"
-export PATH="$PATH:/home/levent/.local/bin"
-export PATH="$PATH:/home/levent/.cargo/bin"
-# Install Ruby Gems to ~/.gem
-export GEM_HOME="$HOME/.gem"
-export PATH="$HOME/.gem/bin:$PATH"
-export PATH=$PATH:/usr/local/go/bin
-
+alias xc="xclip -selection clipboard"
