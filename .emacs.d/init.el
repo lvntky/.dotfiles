@@ -336,3 +336,44 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;; ============================================================================
+;; MINIBUFFER - VERTICO / ORDERLESS / CONSULT / MARGINALIA
+;; ============================================================================
+
+(use-package vertico
+  :init
+  (vertico-mode)
+  :config
+  (setq vertico-cycle t
+        vertico-count 12))
+
+(use-package orderless
+  :config
+  (setq completion-styles '(orderless basic)
+        completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package marginalia
+  :init
+  (marginalia-mode))
+
+(use-package consult
+  :bind
+  ("C-x b"   . consult-buffer)
+  ("C-x r b" . consult-bookmark)
+  ("M-y"     . consult-yank-pop)
+  ("M-s r"   . consult-ripgrep)
+  ("M-s l"   . consult-line)
+  ("M-s f"   . consult-find)
+  ("M-g g"   . consult-goto-line)
+  ("M-g i"   . consult-imenu)
+  :config
+  (setq consult-preview-key "M-."))
+
+
+;;=================================================
+;; pair mode
+;;=================================================
+(electric-pair-mode 1)
+(add-hook 'prog-mode-hook 'electric-pair-local-mode)
