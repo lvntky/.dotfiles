@@ -16,3 +16,6 @@
 .config/vlc/
 .config/xfce4/
 .config/Thunar
+
+.config/zsh/.zcompdump*
+.config/zsh/.zcompdump-*

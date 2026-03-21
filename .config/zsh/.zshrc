@@ -1,3 +1,46 @@
+# XDG Base Directories (set explicitly so everything agrees)
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+export XDG_CACHE_HOME="$HOME/.cache"
+
+# zsh history
+export HISTFILE="$XDG_STATE_HOME/zsh/history"
+
+# oh-my-zsh
+export ZSH="$XDG_DATA_HOME/oh-my-zsh"
+
+# zsh completion dump
+mkdir -p "$XDG_CACHE_HOME/zsh"
+autoload -Uz compinit
+compinit -d "$XDG_CACHE_HOME/zsh/zcompdump-$ZSH_VERSION"
+
+# Rust
+export CARGO_HOME="$XDG_DATA_HOME/cargo"
+export RUSTUP_HOME="$XDG_DATA_HOME/rustup"
+source "$CARGO_HOME/env"   # adds cargo to PATH
+
+# Go
+export GOPATH="$XDG_DATA_HOME/go"
+export GOMODCACHE="$XDG_CACHE_HOME/go/mod"
+
+# Python
+export PYTHONSTARTUP="$XDG_CONFIG_HOME/python/pythonrc"
+export PYTHON_HISTORY="$XDG_STATE_HOME/python/history"
+export PYLINTHOME="$XDG_CACHE_HOME/pylint"
+mkdir -p "$XDG_CONFIG_HOME/python" "$XDG_STATE_HOME/python"
+
+# C/C++ - clangd config
+# (clangd reads from $XDG_CONFIG_HOME/clangd/config.yaml natively, nothing to set)
+
+# GDB history
+export GDBHISTFILE="$XDG_DATA_HOME/gdb/history"
+mkdir -p "$XDG_DATA_HOME/gdb"
+
+# Valgrind
+export VALGRIND_OPTS="--suppressions=$XDG_CONFIG_HOME/valgrind/default.supp"
+
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -8,8 +51,15 @@ fi
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
+# Local user binaries
+export PATH="$HOME/.local/bin:$PATH"
+
 # Path to your oh-my-zsh installation.
-export ZSH="$HOME/.oh-my-zsh"
+export ZSH="$HOME/.local/share/oh-my-zsh"
+
+
+# debug info
+export DEBUGINFOD_URLS="https://debuginfod.fedoraproject.org"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -77,7 +127,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting ssh-agent)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -108,6 +158,6 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+[[ ! -f ${ZDOTDIR:-~}/.p10k.zsh ]] || source ${ZDOTDIR:-~}/.p10k.zsh
 
 alias xc="xclip -selection clipboard"
