@@ -174,6 +174,7 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+
 ;; ============================================================================
 ;; GIT
 ;; ============================================================================
@@ -186,16 +187,6 @@
   (global-diff-hl-mode)
   (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
-
-;; ============================================================================
-;; NAVIGATION
-;; ============================================================================
-
-(use-package dumb-jump
-  :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
-  (setq dumb-jump-prefer-searcher 'rg
-        dumb-jump-selector 'completing-read))
 
 ;; ============================================================================
 ;; PROJECTS
@@ -311,32 +302,20 @@
                 mode-line-misc-info
                 mode-line-end-spaces))
 
-
 ;; ============================================================================
-;; CTAGS
+;; TAGS / XREF
 ;; ============================================================================
-(use-package citre
-  :ensure t
-  :init (require 'citre-config)
-  :bind (:map citre-mode-map
-         ("M-."     . citre-jump)
-         ("M-,"     . citre-jump-back)
-         ("C-x c p" . citre-peek)))
 
-;;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(setq tags-revert-without-query t
+      tags-case-fold-search nil)
 
+;; proje açılınca TAGS dosyasını otomatik yükle
+(add-hook 'prog-mode-hook
+          (lambda ()
+            (let ((tags-file (locate-dominating-file default-directory "TAGS")))
+              (when tags-file
+                (visit-tags-table
+                 (concat tags-file "TAGS") t)))))
 
 ;; ============================================================================
 ;; MINIBUFFER - VERTICO / ORDERLESS / CONSULT / MARGINALIA
@@ -371,9 +350,28 @@
   :config
   (setq consult-preview-key "M-."))
 
+;; ============================================================================
+;; PAIR MODE
+;; ============================================================================
 
-;;=================================================
-;; pair mode
-;;=================================================
 (electric-pair-mode 1)
 (add-hook 'prog-mode-hook 'electric-pair-local-mode)
+
+;;; init.el ends here
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(ace-window auto-highlight-symbol citre company consult diff-hl
+                dumb-jump helpful magit marginalia markdown-mode
+                modern-cpp-font-lock nasm-mode orderless projectile
+                rainbow-delimiters rg vertico winum yasnippet-snippets)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
