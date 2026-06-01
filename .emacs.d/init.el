@@ -366,10 +366,10 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    '(ace-window auto-highlight-symbol citre company consult diff-hl
-                dumb-jump helpful magit marginalia markdown-mode
-                modern-cpp-font-lock nasm-mode orderless projectile
-                rainbow-delimiters rg vertico vterm winum
-                yasnippet-snippets)))
+                dumb-jump helpful java-imports java-snippets magit
+                marginalia markdown-mode modern-cpp-font-lock
+                nasm-mode orderless projectile rainbow-delimiters rg
+                vertico vterm winum yasnippet-snippets zig-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
