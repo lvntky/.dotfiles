@@ -1,3 +1,14 @@
+SSH_AGENT_ENV="${XDG_RUNTIME_DIR:-$HOME/.cache}/ssh-agent.env"
+ssh-add -l &>/dev/null
+if [[ $? -eq 2 ]]; then
+  [[ -r "$SSH_AGENT_ENV" ]] && source "$SSH_AGENT_ENV" >/dev/null
+  ssh-add -l &>/dev/null
+  if [[ $? -eq 2 ]]; then
+    (umask 077; ssh-agent -s >| "$SSH_AGENT_ENV")
+    source "$SSH_AGENT_ENV" >/dev/null
+    ssh-add
+  fi
+fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -55,9 +66,6 @@ export VALGRIND_OPTS="--suppressions=$XDG_CONFIG_HOME/valgrind/default.supp"
 
 # Local user binaries
 export PATH="$HOME/.local/bin:$PATH"
-
-# Path to your oh-my-zsh installation.
-export ZSH="$HOME/.local/share/oh-my-zsh"
 
 
 # debug info
@@ -129,7 +137,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions zsh-syntax-highlighting ssh-agent)
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 
 source $ZSH/oh-my-zsh.sh
