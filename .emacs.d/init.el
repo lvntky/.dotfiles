@@ -368,8 +368,9 @@
    '(ace-window auto-highlight-symbol citre company consult diff-hl
                 dumb-jump helpful java-imports java-snippets magit
                 marginalia markdown-mode modern-cpp-font-lock
-                nasm-mode orderless projectile rainbow-delimiters rg
-                vertico vterm winum yasnippet-snippets zig-mode)))
+                multiple-cursors nasm-mode orderless projectile
+                rainbow-delimiters rg undo-tree vertico vterm winum
+                yasnippet-snippets zig-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
