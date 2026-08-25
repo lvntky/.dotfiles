@@ -1,7 +1,4 @@
 ;;; init.el --- Emacs Configuration
-;;; Commentary:
-;; Emacs 28.2 configuration for C/C++/Python/ASM development
-;; Focus: Performance, minimal UI, great buffer/window management
 
 ;;; Code:
 
@@ -13,7 +10,18 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 2 1000 1000))))
+            (setq gc-cons-threshold (* 8 1000 1000))))
+
+(setq read-process-output-max (* 4 1024 1024)
+      process-adaptive-read-buffering nil
+      native-comp-async-report-warnings-errors 'silent)
+
+;; ============================================================================
+;; CUSTOM FILE
+;; ============================================================================
+
+(setq custom-file (locate-user-emacs-file "custom.el"))
+(load custom-file 'noerror 'nomessage)
 
 ;; ============================================================================
 ;; PACKAGE MANAGEMENT
@@ -26,8 +34,10 @@
 (setq package-install-upgrade-built-in t)
 (package-initialize)
 
+(unless package-archive-contents
+  (package-refresh-contents))
+
 (unless (package-installed-p 'use-package)
-  (package-refresh-contents)
   (package-install 'use-package))
 
 (require 'use-package)
@@ -50,19 +60,27 @@
 (dolist (mode '(org-mode-hook
                 term-mode-hook
                 shell-mode-hook
-                eshell-mode-hook))
+                eshell-mode-hook
+                compilation-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq-default
  indent-tabs-mode nil
  tab-width 4
  c-basic-offset 4
- make-backup-files nil
- auto-save-default nil
- create-lockfiles nil
- ring-bell-function 'ignore
- scroll-conservatively 101
- scroll-margin 3)
+ fill-column 80)
+
+(setq make-backup-files nil
+      auto-save-default nil
+      create-lockfiles nil
+      ring-bell-function 'ignore
+      scroll-conservatively 101
+      scroll-margin 3
+      require-final-newline t
+      sentence-end-double-space nil
+      vc-follow-symlinks t
+      use-short-answers t
+      tramp-default-method "ssh")
 
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
       mouse-wheel-progressive-speed nil
@@ -71,35 +89,53 @@
 (show-paren-mode 1)
 (setq show-paren-delay 0)
 
+(delete-selection-mode 1)
+(global-so-long-mode 1)
+
+(global-auto-revert-mode 1)
+(setq global-auto-revert-non-file-buffers t
+      auto-revert-verbose nil)
+
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
 (recentf-mode 1)
-(setq recentf-max-saved-items 50)
+(setq recentf-max-saved-items 50
+      recentf-exclude '("/tmp/" "/ssh:" "/sudo:"))
 
 (save-place-mode 1)
+(savehist-mode 1)
+(setq savehist-additional-variables
+      '(kill-ring search-ring regexp-search-ring compile-history))
+
+(setq dired-listing-switches "-alh --group-directories-first"
+      dired-dwim-target t
+      dired-recursive-copies 'always
+      dired-recursive-deletes 'top)
 
 ;; ============================================================================
 ;; THEME & FONT
 ;; ============================================================================
 
-(use-package emacs
-  :config
-  (load-theme 'modus-vivendi t))
+(load-theme 'modus-vivendi t)
 
-(set-face-attribute 'default nil
-                    :family "Martian Mono"
-                    :height 160)
+(add-to-list 'default-frame-alist '(font . "Martian Mono-16"))
 
-(set-face-attribute 'fixed-pitch nil
-                    :family "Martian Mono"
-                    :height 160)
+(defun lk/set-fonts (&optional frame)
+  (with-selected-frame (or frame (selected-frame))
+    (set-face-attribute 'default nil :family "Martian Mono" :height 160)
+    (set-face-attribute 'fixed-pitch nil :family "Martian Mono" :height 160)))
+
+(if (daemonp)
+    (add-hook 'after-make-frame-functions #'lk/set-fonts)
+  (lk/set-fonts))
 
 ;; ============================================================================
 ;; WHICH-KEY
 ;; ============================================================================
 
 (use-package which-key
+  :ensure nil
   :init (which-key-mode)
   :diminish which-key-mode
   :config
@@ -110,6 +146,12 @@
 ;; ============================================================================
 
 (use-package winum
+  :bind (("M-1" . winum-select-window-1)
+         ("M-2" . winum-select-window-2)
+         ("M-3" . winum-select-window-3)
+         ("M-4" . winum-select-window-4)
+         ("M-5" . winum-select-window-5)
+         ("M-6" . winum-select-window-6))
   :config
   (winum-mode)
   (setq winum-auto-setup-mode-line nil))
@@ -122,33 +164,92 @@
         aw-dispatch-always t))
 
 (use-package windmove
+  :ensure nil
   :config
   (windmove-default-keybindings 'shift))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; ============================================================================
-;; COMPLETION FRAMEWORK - COMPANY (SADELEŞTİRİLMİŞ)
+;; TREE-SITTER
+;; ============================================================================
+
+(setq treesit-language-source-alist
+      '((c "https://github.com/tree-sitter/tree-sitter-c")
+        (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+        (python "https://github.com/tree-sitter/tree-sitter-python")))
+
+(defun lk/treesit-install-grammars ()
+  (interactive)
+  (if (not (and (fboundp 'treesit-available-p) (treesit-available-p)))
+      (message "This Emacs was built without tree-sitter support")
+    (dolist (lang (mapcar #'car treesit-language-source-alist))
+      (unless (treesit-language-available-p lang)
+        (treesit-install-language-grammar lang)))))
+
+(when (and (fboundp 'treesit-available-p) (treesit-available-p))
+  (dolist (pair '((c-mode . c-ts-mode)
+                  (c++-mode . c++-ts-mode)
+                  (python-mode . python-ts-mode)))
+    (add-to-list 'major-mode-remap-alist pair)))
+
+(setq c-ts-mode-indent-offset 4
+      c-ts-mode-indent-style 'linux)
+
+;; ============================================================================
+;; EGLOT / LSP
+;; ============================================================================
+
+(use-package eglot
+  :ensure nil
+  :hook ((c-mode c++-mode c-ts-mode c++-ts-mode python-mode python-ts-mode)
+         . eglot-ensure)
+  :config
+  (setq eglot-autoshutdown t
+        eglot-report-progress nil)
+  (if (boundp 'eglot-events-buffer-config)
+      (setq eglot-events-buffer-config '(:size 0 :format full))
+    (setq eglot-events-buffer-size 0))
+  (add-to-list 'eglot-server-programs
+               '((c-mode c++-mode c-ts-mode c++-ts-mode)
+                 . ("clangd"
+                    "--background-index"
+                    "--clang-tidy"
+                    "--header-insertion=never"
+                    "--completion-style=detailed")))
+  :bind (:map eglot-mode-map
+              ("C-c e r" . eglot-rename)
+              ("C-c e a" . eglot-code-actions)
+              ("C-c e f" . eglot-format-buffer)))
+
+(setq eldoc-echo-area-use-multiline-p nil
+      eldoc-echo-area-prefer-doc-buffer t)
+
+(use-package flymake
+  :ensure nil
+  :bind (:map flymake-mode-map
+              ("M-n" . flymake-goto-next-error)
+              ("M-p" . flymake-goto-prev-error)
+              ("C-c ! l" . flymake-show-buffer-diagnostics)))
+
+;; ============================================================================
+;; COMPLETION FRAMEWORK - COMPANY
 ;; ============================================================================
 
 (use-package company
   :config
   (setq company-idle-delay 0.3
         company-minimum-prefix-length 2
-
-        ;; GÜRÜLTÜYÜ KES
         company-show-quick-access nil
         company-tooltip-align-annotations nil
         company-tooltip-limit 6
         company-tooltip-margin 0
         company-tooltip-offset-display 'lines
-
-        ;; SADE FRONTEND
         company-format-margin-function nil
+        company-backends '(company-capf company-files)
         company-frontends
         '(company-pseudo-tooltip-frontend
           company-echo-metadata-frontend))
-
   :bind (:map company-active-map
               ("TAB" . company-complete-selection)
               ("<tab>" . company-complete-selection)
@@ -174,13 +275,22 @@
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 
+(use-package ws-butler
+  :hook (prog-mode . ws-butler-mode))
+
+(use-package dtrt-indent
+  :hook (prog-mode . dtrt-indent-mode)
+  :config
+  (setq dtrt-indent-verbosity 0))
 
 ;; ============================================================================
 ;; GIT
 ;; ============================================================================
 
 (use-package magit
-  :bind ("C-x g" . magit-status))
+  :bind ("C-x g" . magit-status)
+  :config
+  (setq git-commit-summary-max-length 72))
 
 (use-package diff-hl
   :config
@@ -206,18 +316,21 @@
 ;; C / C++
 ;; ============================================================================
 
-(use-package cc-mode
-  :ensure nil
-  :config
-  (setq c-default-style "linux"
-        c-basic-offset 4)
+(use-package clang-format)
 
-  (add-hook 'c++-mode-hook
-            (lambda ()
-              (c-set-offset 'innamespace 0))))
+(use-package disaster
+  :commands disaster)
 
-(use-package modern-cpp-font-lock
-  :hook (c++-mode . modern-c++-font-lock-mode))
+(with-eval-after-load 'cc-mode
+  (define-key c-mode-base-map (kbd "C-c f") 'clang-format-buffer)
+  (define-key c-mode-base-map (kbd "C-c d") 'disaster))
+
+(with-eval-after-load 'c-ts-mode
+  (define-key c-ts-base-mode-map (kbd "C-c f") 'clang-format-buffer)
+  (define-key c-ts-base-mode-map (kbd "C-c d") 'disaster))
+
+(use-package cmake-mode
+  :mode ("CMakeLists\\.txt\\'" "\\.cmake\\'"))
 
 ;; ============================================================================
 ;; PYTHON
@@ -230,18 +343,65 @@
         python-indent-offset 4))
 
 ;; ============================================================================
-;; ASSEMBLY
+;; ASSEMBLY & BINARY
 ;; ============================================================================
 
 (use-package nasm-mode
-  :mode "\\.\\(asm\\|s\\|nasm\\)$"
+  :mode "\\.\\(asm\\|nasm\\)\\'"
   :config
   (add-hook 'nasm-mode-hook
             (lambda ()
               (setq tab-width 8
                     indent-tabs-mode t))))
 
-(add-to-list 'auto-mode-alist '("\\.fasm\\'" . asm-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(s\\|S\\|fasm\\)\\'" . asm-mode))
+(add-hook 'asm-mode-hook
+          (lambda ()
+            (setq tab-width 8
+                  indent-tabs-mode t)))
+
+(use-package x86-lookup
+  :bind ("C-h x" . x86-lookup)
+  :config
+  (setq x86-lookup-pdf (expand-file-name "~/doc/intel-sdm.pdf")))
+
+(use-package nhexl-mode
+  :commands nhexl-mode)
+
+;; ============================================================================
+;; MARKUP & CONFIG FORMATS
+;; ============================================================================
+
+(use-package markdown-mode
+  :mode (("\\.md\\'" . gfm-mode)
+         ("\\.markdown\\'" . gfm-mode))
+  :config
+  (setq markdown-fontify-code-blocks-natively t))
+
+(use-package yaml-mode
+  :mode "\\.ya?ml\\'")
+
+;; ============================================================================
+;; DEBUGGING
+;; ============================================================================
+
+(setq gdb-many-windows t
+      gdb-show-main t
+      gdb-restore-window-configuration-after-quit t)
+
+;; ============================================================================
+;; COMPILATION
+;; ============================================================================
+
+(require 'ansi-color)
+(add-hook 'compilation-filter-hook 'ansi-color-compilation-filter)
+(setq compilation-scroll-output 'first-error
+      compilation-ask-about-save nil
+      compile-command "make -k ")
+
+(global-set-key (kbd "<f5>") 'compile)
+(global-set-key (kbd "<f6>") 'recompile)
+(global-set-key (kbd "<f7>") 'gdb)
 
 ;; ============================================================================
 ;; HELP & SEARCH
@@ -252,7 +412,8 @@
   ([remap describe-function] . helpful-callable)
   ([remap describe-variable] . helpful-variable)
   ([remap describe-key] . helpful-key)
-  ([remap describe-command] . helpful-command))
+  ([remap describe-command] . helpful-command)
+  ([remap describe-symbol] . helpful-symbol))
 
 (use-package rg
   :config
@@ -262,9 +423,7 @@
 ;; KEYBINDINGS
 ;; ============================================================================
 
-(global-set-key (kbd "C-x 2") 'split-window-below)
-(global-set-key (kbd "C-x 3") 'split-window-right)
-(global-set-key (kbd "C-x k") 'kill-this-buffer)
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 
 (defun open-init-file ()
   (interactive)
@@ -276,9 +435,6 @@
   (load-file user-init-file)
   (message "init.el reloaded!"))
 (global-set-key (kbd "C-c r") 'reload-init-file)
-
-(global-set-key (kbd "<f5>") 'compile)
-(global-set-key (kbd "<f6>") 'recompile)
 
 ;; ============================================================================
 ;; MODELINE
@@ -303,22 +459,7 @@
                 mode-line-end-spaces))
 
 ;; ============================================================================
-;; TAGS / XREF
-;; ============================================================================
-
-(setq tags-revert-without-query t
-      tags-case-fold-search nil)
-
-;; proje açılınca TAGS dosyasını otomatik yükle
-(add-hook 'prog-mode-hook
-          (lambda ()
-            (let ((tags-file (locate-dominating-file default-directory "TAGS")))
-              (when tags-file
-                (visit-tags-table
-                 (concat tags-file "TAGS") t)))))
-
-;; ============================================================================
-;; MINIBUFFER - VERTICO / ORDERLESS / CONSULT / MARGINALIA
+;; MINIBUFFER - VERTICO / ORDERLESS / CONSULT / MARGINALIA / EMBARK
 ;; ============================================================================
 
 (use-package vertico
@@ -331,7 +472,10 @@
 (use-package orderless
   :config
   (setq completion-styles '(orderless basic)
-        completion-category-overrides '((file (styles basic partial-completion)))))
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles basic partial-completion))
+                                        (eglot (styles orderless))
+                                        (eglot-capf (styles orderless)))))
 
 (use-package marginalia
   :init
@@ -347,33 +491,40 @@
   ("M-s f"   . consult-find)
   ("M-g g"   . consult-goto-line)
   ("M-g i"   . consult-imenu)
+  ("M-g f"   . consult-flymake)
   :config
   (setq consult-preview-key "M-."))
+
+(use-package embark
+  :bind
+  ("C-." . embark-act)
+  ("C-;" . embark-dwim)
+  ("C-h B" . embark-bindings)
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command))
+
+(use-package embark-consult
+  :after (embark consult)
+  :hook (embark-collect-mode . consult-preview-at-point-mode))
+
+;; ============================================================================
+;; ZIG
+;; ============================================================================
+
+(use-package zig-mode
+  :mode "\\.\\(zig\\|zon\\)\\'"
+  :hook (zig-mode . eglot-ensure)
+  :config
+  (setq zig-format-on-save nil)
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(zig-mode . ("zls")))))
 
 ;; ============================================================================
 ;; PAIR MODE
 ;; ============================================================================
 
 (electric-pair-mode 1)
-(add-hook 'prog-mode-hook 'electric-pair-local-mode)
 
+(provide 'init)
 ;;; init.el ends here
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(ace-window auto-highlight-symbol citre company consult diff-hl
-                dumb-jump helpful java-imports java-snippets magit
-                marginalia markdown-mode modern-cpp-font-lock
-                multiple-cursors nasm-mode orderless projectile
-                rainbow-delimiters rg undo-tree vertico vterm winum
-                yasnippet-snippets zig-mode)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

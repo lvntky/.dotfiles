@@ -172,3 +172,8 @@ source $ZSH/oh-my-zsh.sh
 [[ ! -f ${ZDOTDIR:-~}/.p10k.zsh ]] || source ${ZDOTDIR:-~}/.p10k.zsh
 
 alias xc="xclip -selection clipboard"
+
+export PATH="/usr/lib64/ccache:$PATH"
+eval "$(direnv hook zsh)"
+setopt interactive_comments
+zstyle ':bracketed-paste-magic' active-widgets '.self-insert'
