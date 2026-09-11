@@ -1,4 +1,4 @@
-;;; init.el --- Emacs Configuration
+;;; init.el --- Emacs Configuration -*- lexical-binding: t; -*-
 
 ;;; Code:
 
@@ -22,6 +22,12 @@
 
 (setq custom-file (locate-user-emacs-file "custom.el"))
 (load custom-file 'noerror 'nomessage)
+
+;; ============================================================================
+;; PRE-LOAD DECLARATIONS
+;; ============================================================================
+
+(setq org-replace-disputed-keys t)
 
 ;; ============================================================================
 ;; PACKAGE MANAGEMENT
@@ -58,10 +64,12 @@
 (global-display-line-numbers-mode t)
 
 (dolist (mode '(org-mode-hook
+                org-agenda-mode-hook
                 term-mode-hook
                 shell-mode-hook
                 eshell-mode-hook
-                compilation-mode-hook))
+                compilation-mode-hook
+                helpful-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
 (setq-default
@@ -117,14 +125,37 @@
 ;; THEME & FONT
 ;; ============================================================================
 
+(setq modus-themes-mixed-fonts t
+      modus-themes-italic-constructs t
+      modus-themes-bold-constructs nil
+      modus-themes-org-blocks 'gray-background
+      modus-themes-headings
+      '((0 . (variable-pitch light 1.5))
+        (1 . (variable-pitch semibold 1.35))
+        (2 . (variable-pitch semibold 1.2))
+        (3 . (variable-pitch 1.1))
+        (agenda-date . (semibold 1.2))
+        (agenda-structure . (variable-pitch light 1.5))
+        (t . (1.0))))
+
 (load-theme 'modus-vivendi t)
 
 (add-to-list 'default-frame-alist '(font . "Martian Mono-16"))
 
+(defun lk/pick-font (candidates fallback)
+  (or (seq-find (lambda (f) (member f (font-family-list))) candidates)
+      fallback))
+
 (defun lk/set-fonts (&optional frame)
   (with-selected-frame (or frame (selected-frame))
-    (set-face-attribute 'default nil :family "Martian Mono" :height 160)
-    (set-face-attribute 'fixed-pitch nil :family "Martian Mono" :height 160)))
+    (let ((mono (lk/pick-font '("Martian Mono" "Iosevka" "JetBrains Mono")
+                              "Monospace"))
+          (vari (lk/pick-font '("Iosevka Aile" "IBM Plex Sans" "Source Sans 3"
+                                "Cantarell" "DejaVu Sans")
+                              "Sans Serif")))
+      (set-face-attribute 'default nil :family mono :height 160)
+      (set-face-attribute 'fixed-pitch nil :family mono :height 160)
+      (set-face-attribute 'variable-pitch nil :family vari :height 170))))
 
 (if (daemonp)
     (add-hook 'after-make-frame-functions #'lk/set-fonts)
@@ -162,11 +193,6 @@
   (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
         aw-scope 'frame
         aw-dispatch-always t))
-
-(use-package windmove
-  :ensure nil
-  :config
-  (windmove-default-keybindings 'shift))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
@@ -250,11 +276,12 @@
         company-frontends
         '(company-pseudo-tooltip-frontend
           company-echo-metadata-frontend))
-  :bind (:map company-active-map
-              ("TAB" . company-complete-selection)
-              ("<tab>" . company-complete-selection)
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous))
+  :bind (("C-<tab>" . company-complete)
+         :map company-active-map
+         ("TAB" . company-complete-selection)
+         ("<tab>" . company-complete-selection)
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous))
   :hook (after-init . global-company-mode))
 
 ;; ============================================================================
@@ -369,6 +396,19 @@
   :commands nhexl-mode)
 
 ;; ============================================================================
+;; ZIG
+;; ============================================================================
+
+(use-package zig-mode
+  :mode "\\.\\(zig\\|zon\\)\\'"
+  :hook (zig-mode . eglot-ensure)
+  :config
+  (setq zig-format-on-save nil)
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs
+                 '(zig-mode . ("zls")))))
+
+;; ============================================================================
 ;; MARKUP & CONFIG FORMATS
 ;; ============================================================================
 
@@ -380,6 +420,194 @@
 
 (use-package yaml-mode
   :mode "\\.ya?ml\\'")
+
+;; ============================================================================
+;; ORG - CORE
+;; ============================================================================
+
+(defvar lk/org-dir (expand-file-name "~/org"))
+(defvar lk/org-notes-dir (expand-file-name "notes" lk/org-dir))
+
+(dolist (dir (list lk/org-dir lk/org-notes-dir))
+  (unless (file-directory-p dir)
+    (make-directory dir t)))
+
+(defun lk/org-mode-setup ()
+  (setq-local company-idle-delay nil
+              fill-column 92
+              electric-pair-inhibit-predicate
+              (lambda (c)
+                (or (memq c '(?< ?>))
+                    (electric-pair-default-inhibit c)))))
+
+(use-package org
+  :ensure nil
+  :bind (("C-c a" . org-agenda)
+         ("C-c c" . org-capture)
+         ("C-c l" . org-store-link)
+         :map org-mode-map
+         ("C-c C-t" . org-todo)
+         ("M-g h" . consult-org-heading))
+  :hook ((org-mode . lk/org-mode-setup)
+         (org-mode . visual-line-mode))
+  :init
+  (setq org-directory lk/org-dir
+        org-agenda-files (list lk/org-dir)
+        org-default-notes-file (expand-file-name "inbox.org" lk/org-dir))
+  :config
+  (require 'org-tempo)
+
+  (setq org-startup-indented t
+        org-startup-folded 'content
+        org-startup-with-inline-images t
+        org-hide-emphasis-markers t
+        org-pretty-entities t
+        org-ellipsis " ..."
+        org-catch-invisible-edits 'show-and-error
+        org-special-ctrl-a/e t
+        org-special-ctrl-k t
+        org-insert-heading-respect-content t
+        org-M-RET-may-split-line nil
+        org-return-follows-link t
+        org-fontify-quote-and-verse-blocks t
+        org-fontify-whole-heading-line t
+        org-image-actual-width '(640)
+        org-tags-column 0
+        org-auto-align-tags nil
+        org-log-done 'time
+        org-log-into-drawer t
+        org-cycle-separator-lines 1)
+
+  (setq org-src-fontify-natively t
+        org-src-tab-acts-natively t
+        org-src-preserve-indentation t
+        org-edit-src-content-indentation 0
+        org-src-window-setup 'current-window
+        org-confirm-babel-evaluate nil)
+
+  (setq org-todo-keywords
+        '((sequence "TODO(t)" "NEXT(n)" "WAIT(w@/!)"
+                    "|" "DONE(d!)" "KILL(k@)")))
+
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 3))
+        org-refile-use-outline-path 'file
+        org-outline-path-complete-in-steps nil
+        org-refile-allow-creating-parent-nodes 'confirm)
+
+  (setq org-capture-templates
+        `(("t" "Todo" entry
+           (file+headline ,(expand-file-name "inbox.org" lk/org-dir) "Inbox")
+           "* TODO %?\n%U\n%a")
+          ("n" "Note" entry
+           (file+headline ,(expand-file-name "inbox.org" lk/org-dir) "Notes")
+           "* %?\n%U")
+          ("c" "Code reference" entry
+           (file+headline ,(expand-file-name "inbox.org" lk/org-dir) "Code")
+           "* TODO %?\n%U\n%a\n#+begin_src %^{lang}\n%i\n#+end_src")
+          ("j" "Journal" entry
+           (file+olp+datetree ,(expand-file-name "journal.org" lk/org-dir))
+           "* %<%H:%M> %?\n%i")))
+
+  (setq org-agenda-window-setup 'current-window
+        org-agenda-restore-windows-after-quit t
+        org-agenda-skip-scheduled-if-done t
+        org-agenda-skip-deadline-if-done t
+        org-agenda-tags-column 0
+        org-agenda-block-separator ?-)
+
+  (setq org-agenda-custom-commands
+        '(("d" "Dashboard"
+           ((agenda "" ((org-deadline-warning-days 7)))
+            (todo "NEXT" ((org-agenda-overriding-header "Next")))
+            (todo "WAIT" ((org-agenda-overriding-header "Blocked")))))))
+
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (C . t)
+     (python . t)
+     (shell . t)))
+
+  (setq org-babel-C-compiler "gcc"
+        org-babel-C++-compiler "g++"))
+
+(with-eval-after-load 'org-src
+  (dolist (pair '(("C" . c-ts)
+                  ("c" . c-ts)
+                  ("C++" . c++-ts)
+                  ("cpp" . c++-ts)
+                  ("python" . python-ts)
+                  ("zig" . zig)
+                  ("asm" . asm)
+                  ("nasm" . nasm)
+                  ("cmake" . cmake)
+                  ("yaml" . yaml)))
+    (add-to-list 'org-src-lang-modes pair)))
+
+;; ============================================================================
+;; ORG - PRESENTATION
+;; ============================================================================
+
+(use-package org-modern
+  :hook ((org-mode . org-modern-mode)
+         (org-agenda-finalize . org-modern-agenda))
+  :config
+  (setq org-modern-star 'replace
+        org-modern-hide-stars nil
+        org-modern-table nil
+        org-modern-list '((?- . "–") (?* . "•") (?+ . "‣"))
+        org-modern-checkbox nil
+        org-modern-block-name '("" . "")
+        org-modern-keyword nil))
+
+(use-package org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autolinks t
+        org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-delay 0.1))
+
+(use-package mixed-pitch
+  :hook (org-mode . mixed-pitch-mode)
+  :config
+  (setq mixed-pitch-set-height nil)
+  (dolist (face '(org-table org-code org-block org-block-begin-line
+                  org-block-end-line org-verbatim org-special-keyword
+                  org-property-value org-drawer org-date org-tag
+                  org-formula org-meta-line))
+    (add-to-list 'mixed-pitch-fixed-pitch-faces face)))
+
+(use-package visual-fill-column
+  :hook (org-mode . visual-fill-column-mode)
+  :config
+  (setq visual-fill-column-width 110
+        visual-fill-column-center-text t))
+
+;; ============================================================================
+;; ORG - NOTES (DENOTE)
+;; ============================================================================
+
+(use-package denote
+  :bind (("C-c n n" . denote)
+         ("C-c n c" . denote-region)
+         ("C-c n t" . denote-type)
+         ("C-c n i" . denote-link)
+         ("C-c n I" . denote-add-links)
+         ("C-c n b" . denote-backlinks)
+         ("C-c n f" . denote-open-or-create)
+         ("C-c n r" . denote-rename-file)
+         ("C-c n k" . denote-rename-file-using-front-matter))
+  :hook (dired-mode . denote-dired-mode)
+  :config
+  (setq denote-directory lk/org-notes-dir
+        denote-file-type 'org
+        denote-known-keywords '("c" "os" "kernel" "graphics" "thesis"
+                                "zig" "asm" "paper" "work")
+        denote-sort-keywords t
+        denote-date-prompt-use-org-read-date t
+        denote-rename-confirmations '(rewrite-front-matter modify-file-name))
+  (denote-rename-buffer-mode 1))
 
 ;; ============================================================================
 ;; DEBUGGING
@@ -420,45 +648,6 @@
   (rg-enable-default-bindings))
 
 ;; ============================================================================
-;; KEYBINDINGS
-;; ============================================================================
-
-(global-set-key (kbd "C-x k") 'kill-current-buffer)
-
-(defun open-init-file ()
-  (interactive)
-  (find-file user-init-file))
-(global-set-key (kbd "C-c i") 'open-init-file)
-
-(defun reload-init-file ()
-  (interactive)
-  (load-file user-init-file)
-  (message "init.el reloaded!"))
-(global-set-key (kbd "C-c r") 'reload-init-file)
-
-;; ============================================================================
-;; MODELINE
-;; ============================================================================
-
-(setq-default mode-line-format
-              '("%e"
-                mode-line-front-space
-                mode-line-mule-info
-                mode-line-client
-                mode-line-modified
-                mode-line-remote
-                mode-line-frame-identification
-                " "
-                mode-line-buffer-identification
-                "  "
-                mode-line-position
-                (vc-mode vc-mode)
-                "  "
-                mode-line-modes
-                mode-line-misc-info
-                mode-line-end-spaces))
-
-;; ============================================================================
 ;; MINIBUFFER - VERTICO / ORDERLESS / CONSULT / MARGINALIA / EMBARK
 ;; ============================================================================
 
@@ -492,6 +681,7 @@
   ("M-g g"   . consult-goto-line)
   ("M-g i"   . consult-imenu)
   ("M-g f"   . consult-flymake)
+  ("M-g a"   . consult-org-agenda)
   :config
   (setq consult-preview-key "M-."))
 
@@ -508,17 +698,43 @@
   :hook (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; ============================================================================
-;; ZIG
+;; KEYBINDINGS
 ;; ============================================================================
 
-(use-package zig-mode
-  :mode "\\.\\(zig\\|zon\\)\\'"
-  :hook (zig-mode . eglot-ensure)
-  :config
-  (setq zig-format-on-save nil)
-  (with-eval-after-load 'eglot
-    (add-to-list 'eglot-server-programs
-                 '(zig-mode . ("zls")))))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+
+(defun lk/open-init-file ()
+  (interactive)
+  (find-file user-init-file))
+(global-set-key (kbd "C-c i") 'lk/open-init-file)
+
+(defun lk/reload-init-file ()
+  (interactive)
+  (load-file user-init-file)
+  (message "init.el reloaded"))
+(global-set-key (kbd "C-c r") 'lk/reload-init-file)
+
+;; ============================================================================
+;; MODELINE
+;; ============================================================================
+
+(setq-default mode-line-format
+              '("%e"
+                mode-line-front-space
+                mode-line-mule-info
+                mode-line-client
+                mode-line-modified
+                mode-line-remote
+                mode-line-frame-identification
+                " "
+                mode-line-buffer-identification
+                "  "
+                mode-line-position
+                (vc-mode vc-mode)
+                "  "
+                mode-line-modes
+                mode-line-misc-info
+                mode-line-end-spaces))
 
 ;; ============================================================================
 ;; PAIR MODE
