@@ -1,9 +1,0 @@
-;; Object java-imports
-;; EIEIO PERSISTENT OBJECT
-(pcache-repository "java-imports"
-  :file "java-imports"
-  :object-name "java-imports"
-  :version "30.2/0.5"
-  :entries #s(hash-table data (NativeLoader (pcache-entry "pcache-entry-10eac2a183fc" :timestamp 1776889562.240453 :value "com.leventkaya.stbimage4j]")))
-  :entry-cls pcache-entry
-  :timestamp 1776890039.0005922)

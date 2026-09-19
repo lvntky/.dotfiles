@@ -1,25 +1,12 @@
-# Comments and blank lines are allowed.
-
-RCS
-.+,v
-
-CVS
-\.\#.+       # CVS conflict files / emacs lock files
-\.cvsignore
-
-\.svn
-_darcs
-\.hg
-
-\.git
-\.gitignore
-\.gitmodules
-
-.+~          # emacs backup files
-\#.*\#       # emacs autosave files
-
+^/\.git$
+^/\.gitignore$
+^/\.stow-local-ignore$
 ^/README.*
 ^/LICENSE.*
-^/COPYING
-
-current.png
+^/current\.png$
+^/\.config/\.personal-installation-scripts$
+^/\.config/systemd/user/.*\.wants$
+\.zcompdump.*
+\.zwc$
+.+~
+\#.*\#

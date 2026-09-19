@@ -23,3 +23,13 @@
 .config/zsh/.zcompdump-fedora-5.9.zwc
 
 .zotero/
+.emacs.d/var/
+.emacs.d/transient/
+.emacs.d/.cache/
+.emacs.d/recentf
+.emacs.d/history
+.local/share/oh-my-zsh/
+.config/systemd/user/*.wants/
+current.png
+*.elc
+*.eln
