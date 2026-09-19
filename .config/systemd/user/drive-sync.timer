@@ -1,0 +1,9 @@
+[Unit]
+Description=rclone bisync every 55 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=55min
+
+[Install]
+WantedBy=timers.target
