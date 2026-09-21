@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+PROG=${0##*/}
+
+ENGINE=typst
+HIGHLIGHT=tango
+FONTSIZE=11pt
+MARGIN_X=2cm
+MARGIN_Y=2cm
+TOC=1
+NUMBER=1
+OUTPUT=
+OPEN=0
+declare -a EXTRA=()
+declare -a INPUTS=()
+
+usage() {
+    cat <<EOF
+Usage: $PROG [options] <input.md> [more.md ...] [-- pandoc-args...]
+
+  -o FILE       output file (default: first input with .pdf)
+  -e ENGINE     pdf engine: typst, tectonic, xelatex, lualatex (default: $ENGINE)
+  -s STYLE      highlight style (default: $HIGHLIGHT)
+  -f SIZE       font size (default: $FONTSIZE)
+  -m SIZE       both margins (default: $MARGIN_X)
+  -x SIZE       horizontal margin only
+  -y SIZE       vertical margin only
+  -T            disable table of contents
+  -N            disable section numbering
+  -O            open result after build
+  -h            show this help
+EOF
+}
+
+die() { printf '%s: %s\n' "$PROG" "$*" >&2; exit 1; }
+
+while getopts ':o:e:s:f:m:x:y:TNOh' opt; do
+    case $opt in
+        o) OUTPUT=$OPTARG ;;
+        e) ENGINE=$OPTARG ;;
+        s) HIGHLIGHT=$OPTARG ;;
+        f) FONTSIZE=$OPTARG ;;
+        m) MARGIN_X=$OPTARG; MARGIN_Y=$OPTARG ;;
+        x) MARGIN_X=$OPTARG ;;
+        y) MARGIN_Y=$OPTARG ;;
+        T) TOC=0 ;;
+        N) NUMBER=0 ;;
+        O) OPEN=1 ;;
+        h) usage; exit 0 ;;
+        :) die "option -$OPTARG requires an argument" ;;
+        \?) die "unknown option -$OPTARG" ;;
+    esac
+done
+shift $((OPTIND - 1))
+
+while [[ $# -gt 0 ]]; do
+    if [[ $1 == -- ]]; then
+        shift
+        EXTRA+=("$@")
+        break
+    fi
+    INPUTS+=("$1")
+    shift
+done
+
+[[ ${#INPUTS[@]} -gt 0 ]] || { usage >&2; exit 1; }
+command -v pandoc >/dev/null || die "pandoc not found"
+
+for f in "${INPUTS[@]}"; do
+    [[ -r $f ]] || die "cannot read '$f'"
+done
+
+if [[ -z $OUTPUT ]]; then
+    OUTPUT="${INPUTS[0]%.*}.pdf"
+fi
+
+declare -a ARGS=(
+    "${INPUTS[@]}"
+    -o "$OUTPUT"
+    --pdf-engine="$ENGINE"
+    --highlight-style="$HIGHLIGHT"
+    -V fontsize="$FONTSIZE"
+)
+
+case $ENGINE in
+    typst)
+        ARGS+=(-V margin-x="$MARGIN_X" -V margin-y="$MARGIN_Y")
+        ;;
+    *)
+        ARGS+=(-V geometry:"left=$MARGIN_X,right=$MARGIN_X,top=$MARGIN_Y,bottom=$MARGIN_Y")
+        ;;
+esac
+
+[[ $TOC -eq 1 ]] && ARGS+=(--toc)
+[[ $NUMBER -eq 1 ]] && ARGS+=(--number-sections)
+[[ ${#EXTRA[@]} -gt 0 ]] && ARGS+=("${EXTRA[@]}")
+
+pandoc "${ARGS[@]}"
+printf '%s\n' "$OUTPUT"
+
+if [[ $OPEN -eq 1 ]]; then
+    xdg-open "$OUTPUT" >/dev/null 2>&1 &
+fi
