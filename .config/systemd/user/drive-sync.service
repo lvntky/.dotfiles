@@ -1,8 +1,9 @@
 [Unit]
 Description=rclone bisync Google Drive Master
 After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=oneshot
 StateDirectory=rclone
-ExecStart=/usr/bin/rclone bisync gdrive:Master %h/Documents/Master --create-empty-src-dirs --resilient --recover --max-lock 2m --conflict-resolve newer --log-file %S/rclone/bisync.log --log-level INFO
+ExecStart=/usr/bin/rclone bisync gdrive:Master %h/Documents/Master --filters-file %h/.config/rclone/master-bisync.filter --create-empty-src-dirs --resilient --recover --max-lock 2m --conflict-resolve newer --log-file %S/rclone/bisync.log --log-level INFO
